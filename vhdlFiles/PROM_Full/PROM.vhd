@@ -31,17 +31,14 @@ entity PROM is
   port (
     address : in  std_logic_vector (15 downto 0);
     clock   : in  std_logic;
-    dataIn  : in  std_logic_vector (15 downto 0);
-    wrEn    : in  std_logic;
+    --dataIn  : in  std_logic_vector (15 downto 0);
+    --wrEn    : in  std_logic;
     dataOut : out std_logic_vector (15 downto 0)
     );
 end PROM;
 
 architecture Beh of PROM is
 
-  --type memoryBlock is array (0 to 15) of std_logic_vector(15 downto 0);
---   type memoryBlock is array (0 to 255) of std_logic;
---   signal sgDataOut : memoryBlock;
   signal sgDataOut : std_logic_vector(255 downto 0);
   signal ssr       : std_logic;
 

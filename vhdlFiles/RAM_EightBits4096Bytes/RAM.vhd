@@ -29,7 +29,7 @@ use UNISIM.VComponents.all;
 
 entity RAM is
   port (
-    address : in  std_logic_vector (11 downto 0);
+    address : in  std_logic_vector (15 downto 0);
     clock   : in  std_logic;
     dataIn  : in  std_logic_vector (7 downto 0);
     dataOut : out std_logic_vector (7 downto 0);
@@ -43,11 +43,14 @@ begin
 
   RAM_array : for bit_index in 0 to 1 generate
 
-    signal ssr : std_logic;
+    signal ssr       : std_logic;
+    signal sgAddress : std_logic_vector(11 downto 0);
 
   begin
 
-    RAM_Blocks :  RAMB16_S4
+    sgAddress <= address(11 downto 0) - "000100000000";
+
+    RAM_Blocks : RAMB16_S4
       generic map (
         INIT       => X"0",             --  Value of output RAM registers at startup
         SRVAL      => X"0",             --  Ouput value upon SSR assertion
@@ -123,7 +126,7 @@ begin
         INIT_3F    => X"0000000000000000000000000000000000000000000000000000000000000000")
       port map (
         DO         => dataOut ((bit_index * 4 + 3) downto (bit_index * 4)),  -- 4-bit Data Output
-        ADDR       => address,          -- 12-bit Address Input
+        ADDR       => sgAddress,        -- 12-bit Address Input
         CLK        => clock,            -- Clock
         DI         => dataIn ((bit_index * 4 + 3) downto (bit_index * 4)),  -- 4-bit Data Input
         EN         => '1',              -- RAM Enable Input

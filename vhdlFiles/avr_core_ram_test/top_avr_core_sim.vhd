@@ -13,7 +13,7 @@ use WORK.AVRuCPackage.all;
 entity top_avr_core_sim is
   generic(
     -- InsertWaitSt : boolean := FALSE;
-    RAMSize :    positive := 128
+    RAMSize :    positive := 4096
     );
   port(
     ireset  : in std_logic;
@@ -209,16 +209,16 @@ architecture Struct of top_avr_core_sim is
 
 
   component PROM is port (
-    address_in : in  std_logic_vector (15 downto 0);
-    data_out   : out std_logic_vector (15 downto 0));
+    address : in  std_logic_vector (15 downto 0);
+    clock      : in  std_logic;
+    dataOut   : out std_logic_vector (15 downto 0));
   end component;
 
   component DataRAM is
                       generic(RAMSize :     positive);
                     port (
                       cp2             : in  std_logic;
-                      -- address     : in  std_logic_vector (LOG2(RAMSize)-1 downto 0);
-                      address         : in  std_logic_vector (6 downto 0);
+                      address         : in  std_logic_vector (15 downto 0);
                       ramwe           : in  std_logic;
                       din             : in  std_logic_vector (7 downto 0);
                       dout            : out std_logic_vector (7 downto 0));
@@ -358,6 +358,7 @@ architecture Struct of top_avr_core_sim is
 
 
   signal Logic0 : std_logic := '0';
+  signal LogicZ : std_logic := 'Z';
 
 begin
 
@@ -402,8 +403,9 @@ begin
 
 -- Program memory
   PM : component PROM port map(
-    address_in => sg_core_pc,
-    data_out   => sg_core_inst
+    address => sg_core_pc,
+    dataOut   => sg_core_inst,
+    clock => cp2
     );
 
 -- Data memory
@@ -411,8 +413,7 @@ begin
     generic map(RAMSize => RAMSize)
     port map(
       cp2               => cp2,
-      -- address     => sg_core_ramadr(LOG2(RAMSize)-1 downto 0),
-      address           => sg_core_ramadr(6 downto 0),
+      address           => sg_core_ramadr(15 downto 0),
       ramwe             => sg_core_ramwe,
       din               => sg_ram_din,
       dout              => sg_ram_dout);
@@ -506,7 +507,12 @@ begin
   TIMER : component simple_timer port map(
     ireset       => ireset,
     cp2          => cp2,
-    irqline      => sg_ext_int_req(0),
+    irqline      => open,
+-------------------------------------------------------------------------------
+-- This has been modified to make this work, do not know why the output pin is
+-- being driven
+-------------------------------------------------------------------------------
+--irqline      => sg_ext_int_req(0),
     timer_irqack => sg_ind_irq_ack(0)
     );
 
@@ -559,10 +565,14 @@ begin
     EXT1       => Logic0,               -- '0',
     EXT2       => Logic0,               -- '0',
     Tosc1      => Logic0,               -- '0',
+    --OC0_PWM0   => LogicZ,
     OC0_PWM0   => open,
     OC1A_PWM1A => open,
     OC1B_PWM1B => open,
     OC2_PWM2   => open,
+    --OC1A_PWM1A => LogicZ,
+    --OC1B_PWM1B => LogicZ,
+    --OC2_PWM2   => LogicZ,
 
     --IRQ
     TC0OvfIRQ      => sg_core_irqlines(15),  -- Timer/Counter0 overflow ($0020)
@@ -573,12 +583,16 @@ begin
     TC2OvfIRQ_Ack  => sg_ind_irq_ack(9),
     TC2CmpIRQ      => sg_core_irqlines(8),  -- Timer/Counter2 Compare Match ($0012)
     TC2CmpIRQ_Ack  => sg_ind_irq_ack(8),
+    --TC1OvfIRQ      => LogicZ,
     TC1OvfIRQ      => open,
     TC1OvfIRQ_Ack  => Logic0,           -- '0',
+    --TC1CmpAIRQ     => LogicZ,
     TC1CmpAIRQ     => open,
     TC1CmpAIRQ_Ack => Logic0,           -- '0',
+    --TC1CmpBIRQ     => LogicZ,
     TC1CmpBIRQ     => open,
     TC1CmpBIRQ_Ack => Logic0,           -- '0',
+    --TC1ICIRQ       => LogicZ,
     TC1ICIRQ       => open,
     TC1ICIRQ_Ack   => Logic0            -- '0'
     );
@@ -600,9 +614,12 @@ begin
     out_en         => sg_sm_out_en,
     -- SLEEP mode signals
     sleep_en       => open,
+    --sleep_en       => LogicZ,
     -- SRAM control signals
     ESRAM_en       => open,
     ESRAM_WS       => open,
+    --ESRAM_en       => LogicZ,
+    --ESRAM_WS       => LogicZ,
     --IRQ
     ExtInt_IRQ     => sg_core_irqlines(7 downto 0),
     ExtInt_IRQ_Ack => sg_ind_irq_ack(7 downto 4),
