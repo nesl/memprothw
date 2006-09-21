@@ -358,7 +358,6 @@ architecture Struct of top_avr_core_sim is
 
 
   signal Logic0 : std_logic := '0';
-  signal LogicZ : std_logic := 'Z';
 
 begin
 
@@ -565,14 +564,10 @@ begin
     EXT1       => Logic0,               -- '0',
     EXT2       => Logic0,               -- '0',
     Tosc1      => Logic0,               -- '0',
-    --OC0_PWM0   => LogicZ,
     OC0_PWM0   => open,
     OC1A_PWM1A => open,
     OC1B_PWM1B => open,
     OC2_PWM2   => open,
-    --OC1A_PWM1A => LogicZ,
-    --OC1B_PWM1B => LogicZ,
-    --OC2_PWM2   => LogicZ,
 
     --IRQ
     TC0OvfIRQ      => sg_core_irqlines(15),  -- Timer/Counter0 overflow ($0020)
@@ -583,16 +578,12 @@ begin
     TC2OvfIRQ_Ack  => sg_ind_irq_ack(9),
     TC2CmpIRQ      => sg_core_irqlines(8),  -- Timer/Counter2 Compare Match ($0012)
     TC2CmpIRQ_Ack  => sg_ind_irq_ack(8),
-    --TC1OvfIRQ      => LogicZ,
     TC1OvfIRQ      => open,
     TC1OvfIRQ_Ack  => Logic0,           -- '0',
-    --TC1CmpAIRQ     => LogicZ,
     TC1CmpAIRQ     => open,
     TC1CmpAIRQ_Ack => Logic0,           -- '0',
-    --TC1CmpBIRQ     => LogicZ,
     TC1CmpBIRQ     => open,
     TC1CmpBIRQ_Ack => Logic0,           -- '0',
-    --TC1ICIRQ       => LogicZ,
     TC1ICIRQ       => open,
     TC1ICIRQ_Ack   => Logic0            -- '0'
     );
@@ -614,12 +605,9 @@ begin
     out_en         => sg_sm_out_en,
     -- SLEEP mode signals
     sleep_en       => open,
-    --sleep_en       => LogicZ,
     -- SRAM control signals
     ESRAM_en       => open,
     ESRAM_WS       => open,
-    --ESRAM_en       => LogicZ,
-    --ESRAM_WS       => LogicZ,
     --IRQ
     ExtInt_IRQ     => sg_core_irqlines(7 downto 0),
     ExtInt_IRQ_Ack => sg_ind_irq_ack(7 downto 4),
