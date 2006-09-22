@@ -16,8 +16,8 @@ entity top_avr_core_sim is
     RAMSize :    positive := 4096
     );
   port(
-    ireset  : in std_logic;
     cp2     : in std_logic;
+    ireset  : in std_logic;
 
     porta : inout std_logic_vector(7 downto 0);
     portb : inout std_logic_vector(7 downto 0);
