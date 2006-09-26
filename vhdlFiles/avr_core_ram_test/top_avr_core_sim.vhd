@@ -211,7 +211,10 @@ architecture Struct of top_avr_core_sim is
   component PROM is port (
     address : in  std_logic_vector (15 downto 0);
     clock      : in  std_logic;
-    dataOut   : out std_logic_vector (15 downto 0));
+    dataOut   : out std_logic_vector (15 downto 0);
+    dataIn : in std_logic_vector (15 downto 0);
+    wrEn : in std_logic);
+                 
   end component;
 
   component DataRAM is
@@ -404,7 +407,9 @@ begin
   PM : component PROM port map(
     address => sg_core_pc,
     dataOut   => sg_core_inst,
-    clock => cp2
+    clock => cp2,
+    wrEn => '0',
+    dataIn => "0000000000000000"
     );
 
 -- Data memory
