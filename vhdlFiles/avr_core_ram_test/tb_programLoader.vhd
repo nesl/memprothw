@@ -29,8 +29,20 @@ architecture test_bench of tb_programLoader is
   signal tb_INT6  : std_logic;
   signal tb_INT7  : std_logic;
 
+  -- Temp signals
+  signal tbData : std_logic_vector(15 downto 0);
+  signal tbAddress : std_logic_vector(15 downto 0);
+  signal tbLoadingData : std_logic_vector(15 downto 0);
+  signal tbLoadingAddress : std_logic_vector(15 downto 0);
+
   component programLoader
     port (
+
+      loadingData    : out std_logic_vector(15 downto 0);
+      loadingAddress : out std_logic_vector(15 downto 0);
+      tempData : out std_logic_vector(15 downto 0);
+      tempAddress : out std_logic_vector(15 downto 0);
+      
       -- General Ports
       clock : in std_logic;
       reset : in std_logic;
@@ -58,6 +70,12 @@ begin  -- test_bench
 
   programLoader1 : programLoader
     port map (
+
+      loadingData => tbLoadingData,
+      loadingAddress => tbLoadingAddress,
+      tempData => tbData,
+      tempAddress => tbAddress,
+      
       clock => tbClock,
       reset => tbReset,
       porta => tbPorta,

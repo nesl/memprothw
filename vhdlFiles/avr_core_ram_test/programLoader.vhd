@@ -8,6 +8,12 @@ use WORK.AVRuCPackage.all;
 entity programLoader is
 
   port (
+
+    loadingData    : out std_logic_vector(15 downto 0);
+    loadingAddress : out std_logic_vector(15 downto 0);
+    tempData    : out std_logic_vector(15 downto 0);
+    tempAddress : out std_logic_vector(15 downto 0);
+
     -- General Ports
     clock : in std_logic;
     reset : in std_logic;
@@ -35,6 +41,11 @@ architecture beh of programLoader is
 
   component top_avr_core_sim
     is port (
+
+      -- Temp signals
+      tempPromAddress : out std_logic_vector(15 downto 0);
+      tempPromData    : out std_logic_vector(15 downto 0);
+
       cp2           : in    std_logic;
       ireset        : in    std_logic;
       porta         : inout std_logic_vector(7 downto 0);
@@ -72,7 +83,14 @@ architecture beh of programLoader is
 
 begin  -- beh
 
+  loadingAddress <= sgAddress;
+  loadingData <= sgData;
+
   avr_core : component top_avr_core_sim port map (
+    -- temp signals
+    tempPromData    => tempData,
+    tempPromAddress => tempAddress,
+
     cp2           => clock,
     ireset        => sgReset,
     porta         => porta,
@@ -107,17 +125,17 @@ begin  -- beh
   clockProcess : process (clock, reset)
   begin  -- process Clock
     if (reset = '0') then
-      sgAddress   <= "0000000000000000";
-      sgWrEn      <= '1';
-      sgReset     <= '0';
+      sgAddress     <= "0000000000000000";
+      sgWrEn        <= '1';
+      sgReset       <= '1';
     else
       if (clock = '1' and clock'event) then
         if (sgAddress = "1111111111111111") then
-          sgWrEn  <= '1';
-          sgReset <= '0';
+          sgWrEn    <= '1';
+          sgReset   <= '1';
         else
-          sgWrEn  <= '1';
-          sgReset <= '0';
+          sgWrEn    <= '1';
+          sgReset   <= '0';
           sgAddress <= sgAddress + 1;
         end if;
       end if;

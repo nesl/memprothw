@@ -13,30 +13,36 @@ use WORK.AVRuCPackage.all;
 entity top_avr_core_sim is
   generic(
     -- InsertWaitSt : boolean := FALSE;
-    RAMSize :    positive := 4096
+    RAMSize : positive := 4096
     );
   port(
-    cp2     : in std_logic;
-    ireset  : in std_logic;
 
-    porta : inout std_logic_vector(7 downto 0);
-    portb : inout std_logic_vector(7 downto 0);
+    -- Temp signals
+    tempPromAddress : out std_logic_vector(15 downto 0);
+    tempPromData    : out std_logic_vector(15 downto 0);
+
+    cp2    : in std_logic;
+    ireset : in std_logic;
+
+    porta         : inout std_logic_vector(7 downto 0);
+    portb         : inout std_logic_vector(7 downto 0);
     -- UART 
-    rxd   : in    std_logic;
-    txd   : out   std_logic;
+    rxd           : in    std_logic;
+    txd           : out   std_logic;
     -- External interrupt inputs
-    nINT0 : in    std_logic;
-    nINT1 : in    std_logic;
-    nINT2 : in    std_logic;
-    nINT3 : in    std_logic;
-    INT4  : in    std_logic;
-    INT5  : in    std_logic;
-    INT6  : in    std_logic;
-    INT7  : in    std_logic;
+    nINT0         : in    std_logic;
+    nINT1         : in    std_logic;
+    nINT2         : in    std_logic;
+    nINT3         : in    std_logic;
+    INT4          : in    std_logic;
+    INT5          : in    std_logic;
+    INT6          : in    std_logic;
+    INT7          : in    std_logic;
     -- Loader specific ports
-    promAddressIn : in std_logic_vector( 15 downto 0);
-    promDataIn : in std_logic_vector(15 downto 0);
-    promWrEn : in std_logic
+    promAddressIn : in    std_logic_vector( 15 downto 0);
+    promDataIn    : in    std_logic_vector(15 downto 0);
+    promWrEn      : in    std_logic
+
     );
 end top_avr_core_sim;
 
@@ -369,6 +375,9 @@ architecture Struct of top_avr_core_sim is
 
 begin
 
+  tempPromAddress <= sg_core_pc;
+  tempPromData    <= sg_core_inst;
+
   TESTING_CORE : component avr_core port map
     (
 
@@ -412,10 +421,10 @@ begin
   PM : component PROM port map(
     addressDO => sg_core_pc,
     addressDI => promAddressIn,
-    dataOut => sg_core_inst,
-    clock   => cp2,
-    wrEn    => promWrEn,
-    dataIn  => promDataIn
+    dataOut   => sg_core_inst,
+    clock     => cp2,
+    wrEn      => promWrEn,
+    dataIn    => promDataIn
     );
 
 -- Data memory
