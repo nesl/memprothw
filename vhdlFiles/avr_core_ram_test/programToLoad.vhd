@@ -3,12 +3,12 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 
-entity prom is port (
+entity programToLoad is port (
 address_in : in  std_logic_vector (15 downto 0);
 data_out   : out std_logic_vector (15 downto 0));
-end prom;
+end programToLoad;
 
-architecture rtl of prom is
+architecture rtl of programToLoad is
 begin
 data_out <=
 		x"940C" when address_in = 16#0000# else

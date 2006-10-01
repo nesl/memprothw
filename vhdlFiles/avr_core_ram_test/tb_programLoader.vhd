@@ -9,38 +9,69 @@ end tb_programLoader;
 
 architecture test_bench of tb_programLoader is
 
-  signal tbAddressDO : std_logic_vector(15 downto 0);
-  signal tbAddressDI : std_logic_vector(15 downto 0);
-  signal tbClock   : std_logic;
-  signal tbDataIn  : std_logic_vector(15 downto 0);
-  signal tbDataOut : std_logic_vector(15 downto 0);
-  signal tbWrEn    : std_logic;
-  signal tbDataTest : std_logic_vector ( 15 downto 0);
+  -- General Ports
+  signal tbClock : std_logic;
+  signal tbReset : std_logic;
+  -- avr specific ports
+
+  signal tbPorta  : std_logic_vector(7 downto 0);
+  signal tbPortb  : std_logic_vector(7 downto 0);
+  -- uart
+  signal tbRxd    : std_logic;
+  signal tbTxd    : std_logic;
+  -- External interrupt inputs
+  signal tb_nINT0 : std_logic;
+  signal tb_nINT1 : std_logic;
+  signal tb_nINT2 : std_logic;
+  signal tb_nINT3 : std_logic;
+  signal tb_INT4  : std_logic;
+  signal tb_INT5  : std_logic;
+  signal tb_INT6  : std_logic;
+  signal tb_INT7  : std_logic;
 
   component programLoader
     port (
-    addressDO : in  std_logic_vector (15 downto 0);  --address for data out
-    addressDI : in  std_logic_vector (15 downto 0);  --address for data in
-    clock     : in  std_logic;          --clock signal
-    dataIn    : in  std_logic_vector (15 downto 0);  --port for data in
-    wrEn      : in  std_logic;          --port for write enable
-    dataOut   : out std_logic_vector (15 downto 0);  --port for data out
-    dataTest : out std_logic_vector ( 15 downto 0)
-    );
+      -- General Ports
+      clock : in std_logic;
+      reset : in std_logic;
+      -- avr specific ports
+
+      porta : inout std_logic_vector(7 downto 0);
+      portb : inout std_logic_vector(7 downto 0);
+      -- uart
+      rxd   : in    std_logic;
+      txd   : out   std_logic;
+      -- External interrupt inputs
+      nINT0 : in    std_logic;
+      nINT1 : in    std_logic;
+      nINT2 : in    std_logic;
+      nINT3 : in    std_logic;
+      INT4  : in    std_logic;
+      INT5  : in    std_logic;
+      INT6  : in    std_logic;
+      INT7  : in    std_logic
+      );
 
   end component;
 
 begin  -- test_bench
 
-  programLoader1: programLoader
+  programLoader1 : programLoader
     port map (
-      addressDI => tbAddressDI,
-      addressDO => tbAddressDO,
       clock => tbClock,
-      dataIn => tbDataIn,
-      dataOut => tbDataOut,
-      wrEn => tbWrEn,
-      dataTest => tbDataTest
+      reset => tbReset,
+      porta => tbPorta,
+      portb => tbPortb,
+      rxd   => tbRxd,
+      txd   => tbTxd,
+      nINT0 => tb_nINT0,
+      nINT1 => tb_nINT1,
+      nINT2 => tb_nINT2,
+      nINT3 => tb_nINT3,
+      INT4  => tb_INT4,
+      INT5  => tb_INT5,
+      INT6  => tb_INT6,
+      INT7  => tb_INT7
       );
 
   clock_process : process
@@ -48,30 +79,24 @@ begin  -- test_bench
     tbClock <= '1', '0' after 50 ns;
     wait for 100 ns;
   end process clock_process;
-  
+
   test_stimuli : process
   begin
 
-    tbAddressDI <= "0000000000000000",
-                   "0000000000000001" after 200 ns;
-    tbAddressDO <= "0000000000000000";
-
-    tbDataIn <= "0000000000000001";
-
-    tbWrEn <= '0', '1' after 90 ns, '0' after 200 ns;
+    tbReset <= '0', '1' after 200 ns;
 
     wait;
 
   end process test_stimuli;
-  
+
 end test_bench;
 
 configuration cfg_tb_programLoader of tb_programLoader is
 
   for test_bench
-    for programLoader1:programLoader
-      use entity work.PROM(Behavioral);
-    end for;    
+    for programLoader1 : programLoader
+      use entity work.programLoader(Behavioral);
+    end for;
   end for;
 
 end cfg_tb_programLoader;
