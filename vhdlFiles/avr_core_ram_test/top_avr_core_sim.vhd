@@ -32,7 +32,11 @@ entity top_avr_core_sim is
     INT4  : in    std_logic;
     INT5  : in    std_logic;
     INT6  : in    std_logic;
-    INT7  : in    std_logic
+    INT7  : in    std_logic;
+    -- Loader specific ports
+    promAddressIn : in std_logic_vector( 15 downto 0);
+    promDataIn : in std_logic_vector(15 downto 0);
+    promWrEn : in std_logic
     );
 end top_avr_core_sim;
 
@@ -209,12 +213,13 @@ architecture Struct of top_avr_core_sim is
 
 
   component PROM is port (
-    address : in  std_logic_vector (15 downto 0);
-    clock      : in  std_logic;
+    addressDO : in  std_logic_vector (15 downto 0);
+    addressDI : in  std_logic_vector (15 downto 0);
+    clock     : in  std_logic;
     dataOut   : out std_logic_vector (15 downto 0);
-    dataIn : in std_logic_vector (15 downto 0);
-    wrEn : in std_logic);
-                 
+    dataIn    : in  std_logic_vector (15 downto 0);
+    wrEn      : in  std_logic);
+
   end component;
 
   component DataRAM is
@@ -405,11 +410,12 @@ begin
 
 -- Program memory
   PM : component PROM port map(
-    address => sg_core_pc,
-    dataOut   => sg_core_inst,
-    clock => cp2,
-    wrEn => '0',
-    dataIn => "0000000000000000"
+    addressDO => sg_core_pc,
+    addressDI => promAddressIn,
+    dataOut => sg_core_inst,
+    clock   => cp2,
+    wrEn    => promWrEn,
+    dataIn  => promDataIn
     );
 
 -- Data memory
@@ -516,7 +522,7 @@ begin
 -- This has been modified to make this work, do not know why the output pin is
 -- being driven
 -------------------------------------------------------------------------------
---irqline      => sg_ext_int_req(0),
+--irqline => sg_ext_int_req(0),
     timer_irqack => sg_ind_irq_ack(0)
     );
 
