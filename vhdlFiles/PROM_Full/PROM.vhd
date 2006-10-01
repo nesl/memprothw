@@ -16,10 +16,10 @@ entity PROM is
   port (
     addressDO : in  std_logic_vector (15 downto 0);  --address for data out
     addressDI : in  std_logic_vector (15 downto 0);  --address for data in
-    clock     : in  std_logic;          --clock signal
+    clock     : in  std_logic;                       --clock signal
     dataIn    : in  std_logic_vector (15 downto 0);  --port for data in
-    wrEn      : in  std_logic;          --port for write enable
-    dataOut   : out std_logic_vector (15 downto 0)  --port for data out
+    wrEn      : in  std_logic;                       --port for write enable
+    dataOut   : out std_logic_vector (15 downto 0)   --port for data out
     );
 end PROM;
 
@@ -32,7 +32,7 @@ architecture Beh of PROM is
 begin  -- Beh
 
   --Logic to configure the individual write enables for the different RAM blocks
-  
+
   sgWrEn(0)  <= not addressDI(15) and not addressDI(14) and not addressDI(13) and not addressDI(12) and wrEn;
   sgWrEn(1)  <= not addressDI(15) and not addressDI(14) and not addressDI(13) and addressDI(12) and wrEn;
   sgWrEn(2)  <= not addressDI(15) and not addressDI(14) and addressDI(13) and not addressDI(12) and wrEn;
@@ -50,46 +50,44 @@ begin  -- Beh
   sgWrEn(14) <= addressDI(15) and addressDI(14) and addressDI(13) and not addressDI(12) and wrEn;
   sgWrEn(15) <= addressDI(15) and addressDI(14) and addressDI(13) and addressDI(12) and wrEn;
 
-  process (clock)
-  begin  -- process
-    if (clock = '1' and clock'event) then
-
+  process (sgDataOut, addressDO)
+  begin  -- Process begins on change in address out port or data out signal
 --Logic to configure which data out signal gets maped to the to the actaul data
 --out
-      if (addressDO(15 downto 12) = "0000") then
-        dataOut <= sgDataOut(15 downto 0);
-      elsif (addressDO(15 downto 12) = "0001") then
-        dataOut <= sgDataOut(31 downto 16);
-      elsif (addressDO(15 downto 12) = "0010") then
-        dataOut <= sgDataOut(47 downto 32);
-      elsif (addressDO(15 downto 12) = "0011") then
-        dataOut <= sgDataOut(63 downto 48);
-      elsif (addressDO(15 downto 12) = "0100") then
-        dataOut <= sgDataOut(79 downto 64);
-      elsif (addressDO(15 downto 12) = "0101") then
-        dataOut <= sgDataOut(95 downto 80);
-      elsif (addressDO(15 downto 12) = "0110") then
-        dataOut <= sgDataOut(111 downto 96);
-      elsif (addressDO(15 downto 12) = "0111") then
-        dataOut <= sgDataOut(127 downto 112);
-      elsif (addressDO(15 downto 12) = "1000") then
-        dataOut <= sgDataOut(143 downto 128);
-      elsif (addressDO(15 downto 12) = "1001") then
-        dataOut <= sgDataOut(159 downto 144);
-      elsif (addressDO(15 downto 12) = "1010") then
-        dataOut <= sgDataOut(175 downto 160);
-      elsif (addressDO(15 downto 12) = "1011") then
-        dataOut <= sgDataOut(191 downto 176);
-      elsif (addressDO(15 downto 12) = "1100") then
-        dataOut <= sgDataOut(207 downto 192);
-      elsif (addressDO(15 downto 12) = "1101") then
-        dataOut <= sgDataOut(223 downto 208);
-      elsif (addressDO(15 downto 12) = "1110") then
-        dataOut <= sgDataOut(239 downto 224);
-      elsif (addressDO(15 downto 12) = "1111") then
-        dataOut <= sgDataOut(255 downto 240);
-      end if;
+    if (addressDO(15 downto 12) = "0000") then
+      dataOut <= sgDataOut(15 downto 0);
+    elsif (addressDO(15 downto 12) = "0001") then
+      dataOut <= sgDataOut(31 downto 16);
+    elsif (addressDO(15 downto 12) = "0010") then
+      dataOut <= sgDataOut(47 downto 32);
+    elsif (addressDO(15 downto 12) = "0011") then
+      dataOut <= sgDataOut(63 downto 48);
+    elsif (addressDO(15 downto 12) = "0100") then
+      dataOut <= sgDataOut(79 downto 64);
+    elsif (addressDO(15 downto 12) = "0101") then
+      dataOut <= sgDataOut(95 downto 80);
+    elsif (addressDO(15 downto 12) = "0110") then
+      dataOut <= sgDataOut(111 downto 96);
+    elsif (addressDO(15 downto 12) = "0111") then
+      dataOut <= sgDataOut(127 downto 112);
+    elsif (addressDO(15 downto 12) = "1000") then
+      dataOut <= sgDataOut(143 downto 128);
+    elsif (addressDO(15 downto 12) = "1001") then
+      dataOut <= sgDataOut(159 downto 144);
+    elsif (addressDO(15 downto 12) = "1010") then
+      dataOut <= sgDataOut(175 downto 160);
+    elsif (addressDO(15 downto 12) = "1011") then
+      dataOut <= sgDataOut(191 downto 176);
+    elsif (addressDO(15 downto 12) = "1100") then
+      dataOut <= sgDataOut(207 downto 192);
+    elsif (addressDO(15 downto 12) = "1101") then
+      dataOut <= sgDataOut(223 downto 208);
+    elsif (addressDO(15 downto 12) = "1110") then
+      dataOut <= sgDataOut(239 downto 224);
+    elsif (addressDO(15 downto 12) = "1111") then
+      dataOut <= sgDataOut(255 downto 240);
     end if;
+    --end if;
   end process;
 
   --Generate 64 blocks of memory
@@ -107,7 +105,7 @@ begin  -- Beh
         SRVAL_B             => X"0",    --  Port B ouput value upon SSR assertion
         WRITE_MODE_A        => "WRITE_FIRST",  --  WRITE_FIRST, READ_FIRST or NO_CHANGE
         WRITE_MODE_B        => "WRITE_FIRST",  --  WRITE_FIRST, READ_FIRST or NO_CHANGE
-        SIM_COLLISION_CHECK => "ALL",   -- "NONE", "WARNING", "GENERATE_X_ONLY", "ALL
+        SIM_COLLISION_CHECK => "NONE",  -- "NONE", "WARNING", "GENERATE_X_ONLY", "ALL
         -- The following INIT_xx declarations specify the initial contents of the RAM
         -- Address 0 to 1023
         INIT_00             => X"0000000000000000000000000000000000000000000000000000000000000000",
@@ -179,7 +177,7 @@ begin  -- Beh
         INIT_3F             => X"0000000000000000000000000000000000000000000000000000000000000000")
       port map (
         DOA                 => sgDataOut((index * 4 + 3) downto (index * 4)),  -- 4-bit Data Output
-        DOB                 => open,    -- Port B 4-bit Data Output
+        DOB                 => open,
         ADDRA               => addressDO(11 downto 0),  -- Port A 12-bit Address Input
         ADDRB               => addressDI(11 downto 0),  -- Port B 12-bit Address Input
         CLKA                => clock,   -- Port A Clock
