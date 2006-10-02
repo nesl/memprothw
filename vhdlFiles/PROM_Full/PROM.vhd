@@ -28,8 +28,11 @@ architecture Beh of PROM is
   signal sgDataOut : std_logic_vector(255 downto 0);
   signal sgWrEn    : std_logic_vector(15 downto 0);
   signal ssr       : std_logic;
+  signal sgClockA : std_logic;
 
 begin  -- Beh
+
+  sgClockA <= clock after 5 ns;
 
   --Logic to configure the individual write enables for the different RAM blocks
 
@@ -180,7 +183,7 @@ begin  -- Beh
         DOB                 => open,
         ADDRA               => addressDO(11 downto 0),  -- Port A 12-bit Address Input
         ADDRB               => addressDI(11 downto 0),  -- Port B 12-bit Address Input
-        CLKA                => clock,   -- Port A Clock
+        CLKA                => sgClockA,   -- Port A Clock
         CLKB                => clock,   -- Port B Clock
         DIA                 => "0000",  -- Port A 4-bit Data Input
         DIB                 => dataIn( (((index mod 4) * 4) + 3) downto ((index mod 4) * 4) ),  -- 4-bit Data Input

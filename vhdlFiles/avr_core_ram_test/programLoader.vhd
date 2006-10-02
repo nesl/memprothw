@@ -11,8 +11,9 @@ entity programLoader is
 
     loadingData    : out std_logic_vector(15 downto 0);
     loadingAddress : out std_logic_vector(15 downto 0);
-    tempData    : out std_logic_vector(15 downto 0);
-    tempAddress : out std_logic_vector(15 downto 0);
+    procData    : out std_logic_vector(15 downto 0);
+    procAddress : out std_logic_vector(15 downto 0);
+    loadingWrEn : out std_logic;
 
     -- General Ports
     clock : in std_logic;
@@ -81,15 +82,18 @@ architecture beh of programLoader is
   signal sgWrEn    : std_logic;
   signal sgReset   : std_logic;
 
+  signal counter : std_logic;
+
 begin  -- beh
 
   loadingAddress <= sgAddress;
   loadingData <= sgData;
+  loadingWrEn <= sgWrEn;
 
   avr_core : component top_avr_core_sim port map (
     -- temp signals
-    tempPromData    => tempData,
-    tempPromAddress => tempAddress,
+    tempPromData    => procData,
+    tempPromAddress => procAddress,
 
     cp2           => clock,
     ireset        => sgReset,
@@ -127,16 +131,22 @@ begin  -- beh
     if (reset = '0') then
       sgAddress     <= "0000000000000000";
       sgWrEn        <= '1';
-      sgReset       <= '1';
+      sgReset       <= '0';
+      counter <= '0';
     else
       if (clock = '1' and clock'event) then
         if (sgAddress = "1111111111111111") then
-          sgWrEn    <= '1';
-          sgReset   <= '1';
+          sgWrEn    <= '0';
+          sgReset   <= '1' after 110 ns;
         else
-          sgWrEn    <= '1';
-          sgReset   <= '0';
-          sgAddress <= sgAddress + 1;
+          if (counter = '0') then
+            counter <= '1';
+            sgWrEn <= '1';
+            sgReset <= '0';
+            sgAddress <= sgAddress + 1;
+          else
+          counter <= '0';
+          end if;
         end if;
       end if;
     end if;
