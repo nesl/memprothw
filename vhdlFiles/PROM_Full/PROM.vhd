@@ -13,6 +13,8 @@ library UNISIM;
 use UNISIM.VComponents.all;
 
 entity PROM is
+  generic (Delay : time := 5 ns);       --This delay is needed so that the
+                                        --address signal can settle for the PROM
   port (
     addressDO : in  std_logic_vector (15 downto 0);  --address for data out
     addressDI : in  std_logic_vector (15 downto 0);  --address for data in
@@ -32,7 +34,7 @@ architecture Beh of PROM is
 
 begin  -- Beh
 
-  sgClockA <= clock after 5 ns;
+  sgClockA <= clock after Delay;
 
   --Logic to configure the individual write enables for the different RAM blocks
 
@@ -90,7 +92,6 @@ begin  -- Beh
     elsif (addressDO(15 downto 12) = "1111") then
       dataOut <= sgDataOut(255 downto 240);
     end if;
-    --end if;
   end process;
 
   --Generate 64 blocks of memory
@@ -180,18 +181,18 @@ begin  -- Beh
         INIT_3F             => X"0000000000000000000000000000000000000000000000000000000000000000")
       port map (
         DOA                 => sgDataOut((index * 4 + 3) downto (index * 4)),  -- 4-bit Data Output
-        DOB                 => open,
+        DOB                 => open,    -- Data out of port B is not used
         ADDRA               => addressDO(11 downto 0),  -- Port A 12-bit Address Input
         ADDRB               => addressDI(11 downto 0),  -- Port B 12-bit Address Input
         CLKA                => sgClockA,   -- Port A Clock
         CLKB                => clock,   -- Port B Clock
-        DIA                 => "0000",  -- Port A 4-bit Data Input
+        DIA                 => "0000",  -- Port A is not used for writing
         DIB                 => dataIn( (((index mod 4) * 4) + 3) downto ((index mod 4) * 4) ),  -- 4-bit Data Input
         ENA                 => '1',     -- Port A RAM Enable Input
         ENB                 => '1',     -- Port B RAM Enable Input
         SSRA                => SSR,     -- Port A Synchronous Set/Reset Input
         SSRB                => SSR,     -- Port B Synchronous Set/Reset Input
-        WEA                 => '0',     -- Port A Write Enable Input
+        WEA                 => '0',     -- Port A is not used for Writing
         WEB                 => sgWrEn(index / 4)  -- Port B Write Enable Input
         );
 

@@ -218,13 +218,16 @@ architecture Struct of top_avr_core_sim is
   end component;
 
 
-  component PROM is port (
-    addressDO : in  std_logic_vector (15 downto 0);
-    addressDI : in  std_logic_vector (15 downto 0);
-    clock     : in  std_logic;
-    dataOut   : out std_logic_vector (15 downto 0);
-    dataIn    : in  std_logic_vector (15 downto 0);
-    wrEn      : in  std_logic);
+  component PROM
+    is generic (
+      Delay     :     time);
+    port (
+      addressDO : in  std_logic_vector (15 downto 0);
+      addressDI : in  std_logic_vector (15 downto 0);
+      clock     : in  std_logic;
+      dataOut   : out std_logic_vector (15 downto 0);
+      dataIn    : in  std_logic_vector (15 downto 0);
+      wrEn      : in  std_logic);
 
   end component;
 
@@ -418,14 +421,16 @@ begin
     );
 
 -- Program memory
-  PM : component PROM port map(
-    addressDO => sg_core_pc,
-    addressDI => promAddressIn,
-    dataOut   => sg_core_inst,
-    clock     => cp2,
-    wrEn      => promWrEn,
-    dataIn    => promDataIn
-    );
+  PM : component PROM
+    generic map( Delay => 5 ns)
+    port map(
+      addressDO        => sg_core_pc,
+      addressDI        => promAddressIn,
+      dataOut          => sg_core_inst,
+      clock            => cp2,
+      wrEn             => promWrEn,
+      dataIn           => promDataIn
+      );
 
 -- Data memory
   DM : component DataRAM

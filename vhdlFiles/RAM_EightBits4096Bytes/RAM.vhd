@@ -22,9 +22,6 @@ library UNISIM;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
 use IEEE.STD_LOGIC_UNSIGNED.all;
-
----- Uncomment the following library declaration if instantiating
----- any Xilinx primitives in this code.
 use UNISIM.VComponents.all;
 
 entity RAM is
@@ -41,13 +38,15 @@ architecture Behavioral of RAM is
 
 begin
 
+  -- Generate two blocks of RAM
   RAM_array : for bit_index in 0 to 1 generate
 
-    signal ssr       : std_logic;
-    signal sgAddress : std_logic_vector(11 downto 0);
+    signal ssr       : std_logic;       -- Internal ssr signal
+    signal sgAddress : std_logic_vector(11 downto 0);  -- Internal Address signal
 
   begin
 
+    -- Shift all the addresses by 0x1000
     sgAddress <= address(11 downto 0) - "000100000000";
 
     RAM_Blocks : RAMB16_S4

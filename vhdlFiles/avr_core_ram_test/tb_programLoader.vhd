@@ -12,8 +12,8 @@ architecture test_bench of tb_programLoader is
   -- General Ports
   signal tbClock : std_logic;
   signal tbReset : std_logic;
-  -- avr specific ports
 
+  -- avr specific ports
   signal tbPorta  : std_logic_vector(7 downto 0);
   signal tbPortb  : std_logic_vector(7 downto 0);
   -- uart
@@ -38,7 +38,7 @@ architecture test_bench of tb_programLoader is
 
   component programLoader
     port (
-
+      -- temp signals
       loadingData    : out std_logic_vector(15 downto 0);
       loadingAddress : out std_logic_vector(15 downto 0);
       procData : out std_logic_vector(15 downto 0);
@@ -48,8 +48,8 @@ architecture test_bench of tb_programLoader is
       -- General Ports
       clock : in std_logic;
       reset : in std_logic;
-      -- avr specific ports
 
+      -- avr specific ports
       porta : inout std_logic_vector(7 downto 0);
       portb : inout std_logic_vector(7 downto 0);
       -- uart
@@ -97,13 +97,14 @@ begin  -- test_bench
 
   clock_process : process
   begin
+    -- clock period of 100 ns
     tbClock <= '1', '0' after 50 ns;
     wait for 100 ns;
   end process clock_process;
 
   test_stimuli : process
   begin
-
+    -- reset for two clock cycles and then start the system
     tbReset <= '0', '1' after 200 ns;
 
     wait;
