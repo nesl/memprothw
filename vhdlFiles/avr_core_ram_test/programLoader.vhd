@@ -127,7 +127,6 @@ begin  -- beh
       sgAddress      <= "0000000000000000";
       sgWrEn         <= '1';
       sgAvrReset     <= '0';
-      counter        <= '0';
     else
       if (clock = '1' and clock'event) then
         -- if we are done loading the PROM

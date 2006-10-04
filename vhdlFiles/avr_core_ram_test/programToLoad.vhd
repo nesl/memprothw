@@ -90,7 +90,7 @@ data_out <=
 		x"E011" when address_in = 16#004C# else
 		x"E0A0" when address_in = 16#004D# else
 		x"E0B1" when address_in = 16#004E# else
-		x"EDE8" when address_in = 16#004F# else
+		x"EDEC" when address_in = 16#004F# else
 		x"E0F0" when address_in = 16#0050# else
 		x"E000" when address_in = 16#0051# else
 		x"BF0B" when address_in = 16#0052# else
@@ -116,8 +116,10 @@ data_out <=
 		x"E1D0" when address_in = 16#0066# else
 		x"BFDE" when address_in = 16#0067# else
 		x"BFCD" when address_in = 16#0068# else
-		x"E081" when address_in = 16#0069# else
-		x"BB8B" when address_in = 16#006A# else
-		x"CFFE" when address_in = 16#006B# else
+		x"EF8F" when address_in = 16#0069# else
+		x"BB8A" when address_in = 16#006A# else
+		x"E081" when address_in = 16#006B# else
+		x"BB8B" when address_in = 16#006C# else
+		x"CFFE" when address_in = 16#006D# else
 		x"ffff";
 end rtl;
