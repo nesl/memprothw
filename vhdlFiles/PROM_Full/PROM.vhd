@@ -13,8 +13,6 @@ library UNISIM;
 use UNISIM.VComponents.all;
 
 entity PROM is
-  generic (Delay : time := 5 ns);       --This delay is needed so that the
-                                        --address signal can settle for the PROM
   port (
     addressDO : in  std_logic_vector (15 downto 0);  --address for data out
     addressDI : in  std_logic_vector (15 downto 0);  --address for data in
@@ -34,7 +32,7 @@ architecture Beh of PROM is
 
 begin  -- Beh
 
-  sgClockA <= clock after Delay;
+  sgClockA <= not clock ;
 
   --Logic to configure the individual write enables for the different RAM blocks
 
