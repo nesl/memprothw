@@ -20,7 +20,12 @@ entity top_avr_core_sim is
     -- Temp signals
     tempPromAddress : out std_logic_vector(15 downto 0);
     tempPromData    : out std_logic_vector(15 downto 0);
-
+    
+    tempRamAddress : out std_logic_vector(15 downto 0);
+    tempRamDataIn : out std_logic_vector(7 downto 0);
+    tempRamDataOut : out std_logic_vector(7 downto 0);
+    tempRamWrEn : out std_logic;
+    --avr ports
     cp2    : in std_logic;
     ireset : in std_logic;
 
@@ -378,8 +383,14 @@ architecture Struct of top_avr_core_sim is
 
 begin
 
+  -- temp signals begin
   tempPromAddress <= sg_core_pc;
   tempPromData    <= sg_core_inst;
+  tempRamAddress <= sg_core_ramadr(15 downto 0);
+  tempRamDataIn <= sg_ram_din;
+  tempRamDataOut <= sg_ram_dout;
+  tempRamWrEn <= sg_core_ramwe;
+  -- temp signals end
 
   TESTING_CORE : component avr_core port map
     (
@@ -440,7 +451,6 @@ begin
       ramwe             => sg_core_ramwe,
       din               => sg_ram_din,
       dout              => sg_ram_dout);
-
 
 -- cpuwait generation
   cpuwait_Gen : component CPUWaitGenerator

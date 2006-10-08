@@ -29,22 +29,35 @@ architecture test_bench of tb_programLoader is
   signal tb_INT6  : std_logic;
   signal tb_INT7  : std_logic;
 
-  -- Temp signals
-  signal tbProcData : std_logic_vector(15 downto 0);
-  signal tbProcAddress : std_logic_vector(15 downto 0);
-  signal tbLoadingData : std_logic_vector(15 downto 0);
+  -- Temp signals begin
+  signal tbProcData       : std_logic_vector(15 downto 0);
+  signal tbProcAddress    : std_logic_vector(15 downto 0);
+  signal tbLoadingData    : std_logic_vector(15 downto 0);
   signal tbLoadingAddress : std_logic_vector(15 downto 0);
-  signal tbLoadingWrEn : std_logic;
+  signal tbLoadingWrEn    : std_logic;
+
+  signal tbRamAdress  : std_logic_vector(15 downto 0);
+  signal tbRamDataOut : std_logic_vector(7 downto 0);
+  signal tbRamDataIn  : std_logic_vector(7 downto 0);
+  signal tbRamWrEn : std_logic;
+  -- temp signals end
 
   component programLoader
     port (
-      -- temp signals
+      -- temp signals begin
       loadingData    : out std_logic_vector(15 downto 0);
       loadingAddress : out std_logic_vector(15 downto 0);
-      procData : out std_logic_vector(15 downto 0);
-      procAddress : out std_logic_vector(15 downto 0);
-      loadingWrEn : out std_logic;
-      
+      procData       : out std_logic_vector(15 downto 0);
+      procAddress    : out std_logic_vector(15 downto 0);
+      loadingWrEn    : out std_logic;
+
+      RamAddress : out std_logic_vector(15 downto 0);
+      RamDataIn  : out std_logic_vector(7 downto 0);
+      RamDataOut : out std_logic_vector(7 downto 0);
+      RamWrEn : out std_logic;
+
+      -- temp signals end
+
       -- General Ports
       clock : in std_logic;
       reset : in std_logic;
@@ -73,12 +86,19 @@ begin  -- test_bench
   programLoader1 : programLoader
     port map (
 
-      loadingData => tbLoadingData,
+      -- temp signals begin
+      loadingData    => tbLoadingData,
       loadingAddress => tbLoadingAddress,
-      procData => tbProcData,
-      procAddress => tbProcAddress,
-      LoadingWrEn => tbLoadingWrEn,
-      
+      procData       => tbProcData,
+      procAddress    => tbProcAddress,
+      LoadingWrEn    => tbLoadingWrEn,
+
+      RamAddress => tbRamAdress,
+      RamDataOut => tbRamDataOut,
+      RamDataIn => tbRamDataIn,
+      RamWrEn => tbRamWrEn,
+      -- temp signals end
+
       clock => tbClock,
       reset => tbReset,
       porta => tbPorta,

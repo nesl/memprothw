@@ -9,12 +9,19 @@ entity programLoader is
 
   port (
 
+    -- temp signals begin
     loadingData    : out std_logic_vector(15 downto 0);
     loadingAddress : out std_logic_vector(15 downto 0);
     procData       : out std_logic_vector(15 downto 0);
     procAddress    : out std_logic_vector(15 downto 0);
     loadingWrEn    : out std_logic;
 
+    RamAddress : out std_logic_vector(15 downto 0);
+    RamDataIn : out std_logic_vector(7 downto 0);
+    RamDataOut : out std_logic_vector(7 downto 0);
+    RamWrEn : out std_logic;
+    -- temp signals end
+    
     -- General Ports
     clock : in std_logic;
     reset : in std_logic;
@@ -46,6 +53,11 @@ architecture beh of programLoader is
       -- Temp signals
       tempPromAddress : out   std_logic_vector(15 downto 0);
       tempPromData    : out   std_logic_vector(15 downto 0);
+      tempRamAddress : out std_logic_vector(15 downto 0);
+      tempRamDataIn : out std_logic_vector(7 downto 0);
+      tempRamDataOut : out std_logic_vector(7 downto 0);
+      tempRamWrEn : out std_logic;
+
       -- avr_core
       cp2             : in    std_logic;
       ireset          : in    std_logic;
@@ -89,9 +101,15 @@ begin  -- beh
   loadingWrEn    <= sgWrEn;
 
   avr_core : component top_avr_core_sim port map (
-    -- temp signals
+    -- temp signals begin
     tempPromData    => procData,
     tempPromAddress => procAddress,
+    tempRamAddress => RamAddress,
+    tempRamDataOut => RamDataOut,
+    tempRamDataIn => RamDataIn,
+    tempRamWrEn => RamWrEn,
+    -- temp signals end
+    
     -- avr_core
     cp2             => clock,
     ireset          => sgAvrReset,

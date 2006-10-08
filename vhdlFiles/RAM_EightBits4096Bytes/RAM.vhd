@@ -36,7 +36,11 @@ end RAM;
 
 architecture Behavioral of RAM is
 
+  signal sgClock : std_logic;
+  
 begin
+
+  sgClock <= not clock;
 
   -- Generate two blocks of RAM
   RAM_array : for bit_index in 0 to 1 generate
@@ -46,7 +50,7 @@ begin
 
   begin
 
-    -- Shift all the addresses by 0x1000
+    -- Shift all the addresses by 0x100
     sgAddress <= address(11 downto 0) - "000100000000";
 
     RAM_Blocks : RAMB16_S4
@@ -126,7 +130,7 @@ begin
       port map (
         DO         => dataOut ((bit_index * 4 + 3) downto (bit_index * 4)),  -- 4-bit Data Output
         ADDR       => sgAddress,        -- 12-bit Address Input
-        CLK        => clock,            -- Clock
+        CLK        => sgClock,            -- Clock
         DI         => dataIn ((bit_index * 4 + 3) downto (bit_index * 4)),  -- 4-bit Data Input
         EN         => '1',              -- RAM Enable Input
         SSR        => SSR,              -- Synchronous Set/Reset Input
