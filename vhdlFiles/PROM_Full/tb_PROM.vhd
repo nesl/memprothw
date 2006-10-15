@@ -15,7 +15,6 @@ architecture test_bench of tb_PROM is
   signal tbDataIn  : std_logic_vector(15 downto 0);
   signal tbDataOut : std_logic_vector(15 downto 0);
   signal tbWrEn    : std_logic;
-  signal tbDataTest : std_logic_vector ( 15 downto 0);
 
   component PROM
     port (
@@ -24,8 +23,7 @@ architecture test_bench of tb_PROM is
     clock     : in  std_logic;          --clock signal
     dataIn    : in  std_logic_vector (15 downto 0);  --port for data in
     wrEn      : in  std_logic;          --port for write enable
-    dataOut   : out std_logic_vector (15 downto 0);  --port for data out
-    dataTest : out std_logic_vector ( 15 downto 0)
+    dataOut   : out std_logic_vector (15 downto 0)  --port for data out
     );
 
   end component;
@@ -39,8 +37,7 @@ begin  -- test_bench
       clock => tbClock,
       dataIn => tbDataIn,
       dataOut => tbDataOut,
-      wrEn => tbWrEn,
-      dataTest => tbDataTest
+      wrEn => tbWrEn
       );
 
   clock_process : process
@@ -53,12 +50,28 @@ begin  -- test_bench
   begin
 
     tbAddressDI <= "0000000000000000",
-                   "0000000000000001" after 200 ns;
-    tbAddressDO <= "0000000000000000";
+                   "0000000000000001" after 200 ns,
+                   "0000000000000010" after 300 ns,
+                   "0000000000000011" after 400 ns,
+                   "0000000000000100" after 500 ns,
+                   "0000000000000101" after 600 ns;
+    tbAddressDO <= "0000000000000000",
+                   "0000000000000001" after 1200 ns,
+                   "0000000000000010" after 1300 ns,
+                   "0000000000000011" after 1400 ns,
+                   "0000000000000100" after 1500 ns,
+                   "0000000000000101" after 1600 ns;
 
-    tbDataIn <= "0000000000000001";
 
-    tbWrEn <= '0', '1' after 90 ns, '0' after 200 ns;
+
+    tbDataIn <= "0000000000000001",
+                   "0000000000000010" after 200 ns,
+                   "0000000000000011" after 300 ns,
+                   "0000000000000100" after 400 ns,
+                   "0000000000000101" after 500 ns,
+                   "0000000000000110" after 600 ns;
+
+    tbWrEn <= '1', '0' after 700 ns;
 
     wait;
 
