@@ -742,7 +742,12 @@ begin
         (not PWM0 and TCNT0(7) and TCNT0(6) and TCNT0(5) and TCNT0(4) and TCNT0(3) and TCNT0(2) and TCNT0(1) and TCNT0(0))or
         (PWM0 and not(TCNT0(7) or TCNT0(6) or TCNT0(5) or TCNT0(4) or TCNT0(3) or TCNT0(2) or TCNT0(1)) and TCNT0(0) and TCNT0_Cnt_Dir ))))or
               (TOV0 and not(TC0OvfIRQ_Ack or(TIFR_Sel and iowe and dbus_in(0))));
-      OCF0 <= (not OCF0 and(not PWM0 and COM00 and TCNT0_Cmp_Out))or(OCF0 and not(TC0CmpIRQ_Ack or(TIFR_Sel and iowe and dbus_in(1))));
+
+      OCF0 <= (not OCF0 and ( not PWM0 and TCNT0_Cmp_Out)
+              or(OCF0 and not(TC0CmpIRQ_Ack or(TIFR_Sel and iowe and dbus_in(1))));
+
+--       OCF0 <= (not OCF0 and(not PWM0 and COM00 and TCNT0_Cmp_Out))
+--               or(OCF0 and not(TC0CmpIRQ_Ack or(TIFR_Sel and iowe and dbus_in(1))));
 
 -- Timer/Counter2
       TOV2 <= (not TOV2 and (TCNT2_En and(
