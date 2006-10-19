@@ -25,6 +25,10 @@ entity top_avr_core_sim is
     tempRamDataIn : out std_logic_vector(7 downto 0);
     tempRamDataOut : out std_logic_vector(7 downto 0);
     tempRamWrEn : out std_logic;
+
+    -- Real time clock for timer counter
+    rt_Clock : in std_logic;
+    
     --avr ports
     cp2    : in std_logic;
     ireset : in std_logic;
@@ -597,7 +601,7 @@ begin
     --Timer/Counters
     EXT1       => Logic0,               -- '0',
     EXT2       => Logic0,               -- '0',
-    Tosc1      => Logic0,               -- '0',
+    Tosc1      => rt_Clock,               -- real time clock for counter
     OC0_PWM0   => open,
     OC1A_PWM1A => open,
     OC1B_PWM1B => open,
@@ -606,8 +610,13 @@ begin
     --IRQ
     TC0OvfIRQ      => sg_core_irqlines(15),  -- Timer/Counter0 overflow ($0020)
     TC0OvfIRQ_Ack  => sg_ind_irq_ack(15),
+
+    
     TC0CmpIRQ      => sg_core_irqlines(14),  -- Timer/Counter0 Compare Match ($001E)
-    TC0CmpIRQ_Ack  => sg_ind_irq_ack(15),
+    TC0CmpIRQ_Ack  => sg_ind_irq_ack(14),
+--    TC0CmpIRQ_Ack  => sg_ind_irq_ack(15),
+
+
     TC2OvfIRQ      => sg_core_irqlines(9),  -- Timer/Counter2 overflow ($0014)
     TC2OvfIRQ_Ack  => sg_ind_irq_ack(9),
     TC2CmpIRQ      => sg_core_irqlines(8),  -- Timer/Counter2 Compare Match ($0012)

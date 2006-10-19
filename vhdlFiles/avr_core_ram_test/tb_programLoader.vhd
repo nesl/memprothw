@@ -13,21 +13,23 @@ architecture test_bench of tb_programLoader is
   signal tbClock : std_logic;
   signal tbReset : std_logic;
 
+  -- real time clock for timer counter
+  signal tb_rt_Clock : std_logic;
   -- avr specific ports
-  signal tbPorta  : std_logic_vector(7 downto 0);
-  signal tbPortb  : std_logic_vector(7 downto 0);
+  signal tbPorta     : std_logic_vector(7 downto 0);
+  signal tbPortb     : std_logic_vector(7 downto 0);
   -- uart
-  signal tbRxd    : std_logic;
-  signal tbTxd    : std_logic;
+  signal tbRxd       : std_logic;
+  signal tbTxd       : std_logic;
   -- External interrupt inputs
-  signal tb_nINT0 : std_logic;
-  signal tb_nINT1 : std_logic;
-  signal tb_nINT2 : std_logic;
-  signal tb_nINT3 : std_logic;
-  signal tb_INT4  : std_logic;
-  signal tb_INT5  : std_logic;
-  signal tb_INT6  : std_logic;
-  signal tb_INT7  : std_logic;
+  signal tb_nINT0    : std_logic;
+  signal tb_nINT1    : std_logic;
+  signal tb_nINT2    : std_logic;
+  signal tb_nINT3    : std_logic;
+  signal tb_INT4     : std_logic;
+  signal tb_INT5     : std_logic;
+  signal tb_INT6     : std_logic;
+  signal tb_INT7     : std_logic;
 
   -- Temp signals begin
   signal tbProcData       : std_logic_vector(15 downto 0);
@@ -39,7 +41,7 @@ architecture test_bench of tb_programLoader is
   signal tbRamAdress  : std_logic_vector(15 downto 0);
   signal tbRamDataOut : std_logic_vector(7 downto 0);
   signal tbRamDataIn  : std_logic_vector(7 downto 0);
-  signal tbRamWrEn : std_logic;
+  signal tbRamWrEn    : std_logic;
   -- temp signals end
 
   component programLoader
@@ -54,9 +56,12 @@ architecture test_bench of tb_programLoader is
       RamAddress : out std_logic_vector(15 downto 0);
       RamDataIn  : out std_logic_vector(7 downto 0);
       RamDataOut : out std_logic_vector(7 downto 0);
-      RamWrEn : out std_logic;
+      RamWrEn    : out std_logic;
 
       -- temp signals end
+
+      -- Real time clock for timer counter
+      rt_Clock : in std_logic;
 
       -- General Ports
       clock : in std_logic;
@@ -95,9 +100,12 @@ begin  -- test_bench
 
       RamAddress => tbRamAdress,
       RamDataOut => tbRamDataOut,
-      RamDataIn => tbRamDataIn,
-      RamWrEn => tbRamWrEn,
+      RamDataIn  => tbRamDataIn,
+      RamWrEn    => tbRamWrEn,
       -- temp signals end
+
+      -- real time clock for timer counter
+      rt_Clock => tb_rt_Clock,
 
       clock => tbClock,
       reset => tbReset,
@@ -115,6 +123,20 @@ begin  -- test_bench
       INT7  => tb_INT7
       );
 
+--   rt_clock_process : process
+--     begin
+--       -- rt clock period of 30518 ns or 32,768 Hz
+--       tb_rt_Clock <= '1', '0' after 15259 ns;
+--       wait for 30518 ns;
+--     end process rt_clock_process;
+  
+  rt_clock_process : process
+    begin
+      -- rt clock period of 30518 ns or 32,768 Hz
+      tb_rt_Clock <= '1', '0' after 125 ns;
+      wait for 250 ns;
+    end process rt_clock_process;
+  
   clock_process : process
   begin
     -- clock period of 100 ns

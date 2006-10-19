@@ -13,6 +13,7 @@ use IEEE.std_logic_unsigned.all;
 use WORK.AVRuCPackage.all;
 
 entity Timer_Counter is port(
+
   -- AVR Control
   ireset   : in  std_logic;
   cp2      : in  std_logic;
@@ -743,8 +744,8 @@ begin
         (PWM0 and not(TCNT0(7) or TCNT0(6) or TCNT0(5) or TCNT0(4) or TCNT0(3) or TCNT0(2) or TCNT0(1)) and TCNT0(0) and TCNT0_Cnt_Dir ))))or
               (TOV0 and not(TC0OvfIRQ_Ack or(TIFR_Sel and iowe and dbus_in(0))));
 
-      OCF0 <= (not OCF0 and ( not PWM0 and TCNT0_Cmp_Out)
-              or(OCF0 and not(TC0CmpIRQ_Ack or(TIFR_Sel and iowe and dbus_in(1))));
+      OCF0 <= (not OCF0 and ( not PWM0 and TCNT0_Cmp_Out))
+               or (OCF0 and not(TC0CmpIRQ_Ack or(TIFR_Sel and iowe and dbus_in(1))));
 
 --       OCF0 <= (not OCF0 and(not PWM0 and COM00 and TCNT0_Cmp_Out))
 --               or(OCF0 and not(TC0CmpIRQ_Ack or(TIFR_Sel and iowe and dbus_in(1))));

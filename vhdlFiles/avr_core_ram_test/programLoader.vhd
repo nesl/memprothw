@@ -17,11 +17,14 @@ entity programLoader is
     loadingWrEn    : out std_logic;
 
     RamAddress : out std_logic_vector(15 downto 0);
-    RamDataIn : out std_logic_vector(7 downto 0);
+    RamDataIn  : out std_logic_vector(7 downto 0);
     RamDataOut : out std_logic_vector(7 downto 0);
-    RamWrEn : out std_logic;
+    RamWrEn    : out std_logic;
     -- temp signals end
-    
+
+    -- Real time clock for timer counter
+    rt_Clock : in std_logic;
+
     -- General Ports
     clock : in std_logic;
     reset : in std_logic;
@@ -51,34 +54,37 @@ architecture beh of programLoader is
     is port (
 
       -- Temp signals
-      tempPromAddress : out   std_logic_vector(15 downto 0);
-      tempPromData    : out   std_logic_vector(15 downto 0);
-      tempRamAddress : out std_logic_vector(15 downto 0);
-      tempRamDataIn : out std_logic_vector(7 downto 0);
-      tempRamDataOut : out std_logic_vector(7 downto 0);
-      tempRamWrEn : out std_logic;
+      tempPromAddress : out std_logic_vector(15 downto 0);
+      tempPromData    : out std_logic_vector(15 downto 0);
+      tempRamAddress  : out std_logic_vector(15 downto 0);
+      tempRamDataIn   : out std_logic_vector(7 downto 0);
+      tempRamDataOut  : out std_logic_vector(7 downto 0);
+      tempRamWrEn     : out std_logic;
+
+      -- Real time clock for timer counter
+      rt_Clock : in std_logic;
 
       -- avr_core
-      cp2             : in    std_logic;
-      ireset          : in    std_logic;
-      porta           : inout std_logic_vector(7 downto 0);
-      portb           : inout std_logic_vector(7 downto 0);
+      cp2           : in    std_logic;
+      ireset        : in    std_logic;
+      porta         : inout std_logic_vector(7 downto 0);
+      portb         : inout std_logic_vector(7 downto 0);
       -- UART 
-      rxd             : in    std_logic;
-      txd             : out   std_logic;
+      rxd           : in    std_logic;
+      txd           : out   std_logic;
       -- External interrupt inputs
-      nINT0           : in    std_logic;
-      nINT1           : in    std_logic;
-      nINT2           : in    std_logic;
-      nINT3           : in    std_logic;
-      INT4            : in    std_logic;
-      INT5            : in    std_logic;
-      INT6            : in    std_logic;
-      INT7            : in    std_logic;
+      nINT0         : in    std_logic;
+      nINT1         : in    std_logic;
+      nINT2         : in    std_logic;
+      nINT3         : in    std_logic;
+      INT4          : in    std_logic;
+      INT5          : in    std_logic;
+      INT6          : in    std_logic;
+      INT7          : in    std_logic;
       -- Loader specific ports
-      promAddressIn   : in    std_logic_vector( 15 downto 0);
-      promDataIn      : in    std_logic_vector(15 downto 0);
-      promWrEn        : in    std_logic
+      promAddressIn : in    std_logic_vector( 15 downto 0);
+      promDataIn    : in    std_logic_vector(15 downto 0);
+      promWrEn      : in    std_logic
       );
   end component;
 
@@ -104,33 +110,35 @@ begin  -- beh
     -- temp signals begin
     tempPromData    => procData,
     tempPromAddress => procAddress,
-    tempRamAddress => RamAddress,
-    tempRamDataOut => RamDataOut,
-    tempRamDataIn => RamDataIn,
-    tempRamWrEn => RamWrEn,
+    tempRamAddress  => RamAddress,
+    tempRamDataOut  => RamDataOut,
+    tempRamDataIn   => RamDataIn,
+    tempRamWrEn     => RamWrEn,
     -- temp signals end
-    
+
+    -- real time clock for timer counter
+    rt_Clock      => rt_Clock,
     -- avr_core
-    cp2             => clock,
-    ireset          => sgAvrReset,
-    porta           => porta,
-    portb           => portb,
+    cp2           => clock,
+    ireset        => sgAvrReset,
+    porta         => porta,
+    portb         => portb,
     -- UART 
-    rxd             => rxd,
-    txd             => txd,
+    rxd           => rxd,
+    txd           => txd,
     -- External interrupt inputs
-    nINT0           => nINT0,
-    nINT1           => nINT1,
-    nINT2           => nINT2,
-    nINT3           => nINT3,
-    INT4            => INT4,
-    INT5            => INT5,
-    INT6            => INT6,
-    INT7            => INT7,
+    nINT0         => nINT0,
+    nINT1         => nINT1,
+    nINT2         => nINT2,
+    nINT3         => nINT3,
+    INT4          => INT4,
+    INT5          => INT5,
+    INT6          => INT6,
+    INT7          => INT7,
     -- Loader specific ports
-    promAddressIn   => sgAddress,
-    promDataIn      => sgData,
-    promWrEn        => sgWrEn
+    promAddressIn => sgAddress,
+    promDataIn    => sgData,
+    promWrEn      => sgWrEn
     );
 
   loader : component programToLoad port map (
