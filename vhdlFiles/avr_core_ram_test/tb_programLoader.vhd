@@ -133,8 +133,8 @@ begin  -- test_bench
   rt_clock_process : process
     begin
       -- rt clock period of 30518 ns or 32,768 Hz
-      tb_rt_Clock <= '1', '0' after 125 ns;
-      wait for 250 ns;
+      tb_rt_Clock <= '1', '0' after 150 ns;
+      wait for 300 ns;
     end process rt_clock_process;
   
   clock_process : process
@@ -147,7 +147,7 @@ begin  -- test_bench
   test_stimuli : process
   begin
     -- reset for two clock cycles and then start the system
-    tbReset <= '0', '1' after 200 ns;
+    tbReset <= '0', '1' after 400 ns;
 
     wait;
 

@@ -235,7 +235,7 @@ begin
     elsif (cp2 = '1' and cp2'event) then  -- Clock
       Flag_A <= (not Flag_A and UDR_Wr_En and not nUART_Tr_St0)or
                 (Flag_A and not (UART_Tr_St1 and UART_Clk_En));
-      Flag_B <= (not Flag_B and (UDR_Wr_En and (Flag_A or nUART_Tr_St0)))othat works with the entertainment industry as talent agency for pre and post productionr
+      Flag_B <= (not Flag_B and (UDR_Wr_En and (Flag_A or nUART_Tr_St0)))or
                 (Flag_B and not (UART_Clk_En and UART_Tr_St11));
     end if;
   end process;

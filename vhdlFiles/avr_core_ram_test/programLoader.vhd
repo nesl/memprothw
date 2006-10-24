@@ -50,6 +50,8 @@ end programLoader;
 
 architecture beh of programLoader is
 
+  signal eightMhzClock : std_logic_vector(1 downto 0);
+
   component top_avr_core_sim
     is port (
 
@@ -119,7 +121,7 @@ begin  -- beh
     -- real time clock for timer counter
     rt_Clock      => rt_Clock,
     -- avr_core
-    cp2           => clock,
+    cp2           => eightMhzClock(1),
     ireset        => sgAvrReset,
     porta         => porta,
     portb         => portb,
@@ -146,7 +148,17 @@ begin  -- beh
     data_out   => sgData
     );
 
-  clockProcess : process (clock, reset)
+  scalingClock     : process(reset, clock)
+  begin
+    if (reset = '0') then
+      eightMhzClock <= "00";
+
+    elsif (clock = '1' and clock'event) then
+      eightMhzClock <= eightMhzClock + 1;
+    end if;
+  end process scalingClock;
+
+  resetProcess : process (eightMhzClock(1), reset)
   begin  -- process on clock or reset
     -- if initial reset, reset the entire system
     if (reset = '0') then
@@ -154,7 +166,7 @@ begin  -- beh
       sgWrEn         <= '1';
       sgAvrReset     <= '0';
     else
-      if (clock = '1' and clock'event) then
+      if (eightMhzClock(1) = '1' and eightMhzClock(1)'event) then
         -- if we are done loading the PROM
         if (sgAddress = "1111111111111111") then
           -- Stop writing and reset the avr_core
@@ -168,6 +180,6 @@ begin  -- beh
         end if;
       end if;
     end if;
-  end process clockProcess;
+  end process resetProcess;
 
 end beh;
