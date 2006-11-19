@@ -57,6 +57,8 @@ main(int argc, char *argv[])
     hex[1]=aline[8];
     hex[2]=0;
     sscanf(hex,"%x",&tmp);
+    printf("base addr = %x\n",base);
+    printf("tmp = %x\n",tmp);
     if (tmp==1) break;
 
     p=9;
