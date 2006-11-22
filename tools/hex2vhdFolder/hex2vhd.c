@@ -39,7 +39,8 @@ main(int argc, char *argv[])
   fprintf(rom_file,"architecture rtl of programToLoad is\n");
   fprintf(rom_file,"begin\n");
   fprintf(rom_file,"data_out <=\n");
-
+  printf("Generating PROM File ...\n");
+  printf("Writing to address: ");
   while(fgets(aline,1024,f)!=NULL) {
     if (aline[0]!=':') continue;
     p=1;
@@ -57,8 +58,7 @@ main(int argc, char *argv[])
     hex[1]=aline[8];
     hex[2]=0;
     sscanf(hex,"%x",&tmp);
-    printf("base addr = %x\n",base);
-    printf("tmp = %x\n",tmp);
+    printf("%x ",base);
     if (tmp==1) break;
 
     p=9;
@@ -86,9 +86,8 @@ main(int argc, char *argv[])
       exit(1);
     }
   }
-
   fprintf(rom_file,"\t\tx\"ffff\";\n");
   fprintf(rom_file,"end rtl;\n");
-
+  printf("\n Done \n");
   fclose(f);
 }
