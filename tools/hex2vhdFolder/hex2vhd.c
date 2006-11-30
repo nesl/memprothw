@@ -58,7 +58,6 @@ main(int argc, char *argv[])
     hex[1]=aline[8];
     hex[2]=0;
     sscanf(hex,"%x",&tmp);
-    printf("%x ",base);
     if (tmp==1) break;
 
     p=9;
